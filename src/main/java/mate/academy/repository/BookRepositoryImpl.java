@@ -25,7 +25,7 @@ public class BookRepositoryImpl extends AbstractRepository implements BookReposi
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't save book" + book.getTitle(), e);
+            throw new DataProcessingException("Can't save book" + book, e);
         } finally {
             session.close();
         }
