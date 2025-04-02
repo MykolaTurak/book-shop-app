@@ -1,0 +1,8 @@
+mate/academy/repository/BookRepositoryImpl.class
+mate/academy/models/Book.class
+mate/academy/service/BookService.class
+mate/academy/util/HibernateUtil.class
+mate/academy/repository/AbstractRepository.class
+mate/academy/service/BookServiceImpl.class
+mate/academy/repository/BookRepository.class
+mate/academy/demo1/Demo1Application.class
