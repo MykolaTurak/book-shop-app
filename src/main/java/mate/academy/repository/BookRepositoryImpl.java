@@ -9,9 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookRepositoryImpl extends AbstractRepository implements BookRepository {
-    protected BookRepositoryImpl(SessionFactory sessionFactory) {
-        super(sessionFactory);
-    }
+    private final SessionFactory sessionFactory;
 
     @Override
     public Book save(Book book) {
