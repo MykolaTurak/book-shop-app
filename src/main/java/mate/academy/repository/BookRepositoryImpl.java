@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class BookRepositoryImpl extends AbstractRepository implements BookRepository {
     private final SessionFactory sessionFactory;
 
