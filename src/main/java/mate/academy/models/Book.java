@@ -8,7 +8,8 @@ import jakarta.persistence.Id;
 import java.math.BigDecimal;
 import lombok.Data;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "books")
 public class Book {
     @Id
