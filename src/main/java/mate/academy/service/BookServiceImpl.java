@@ -1,4 +1,24 @@
 package mate.academy.service;
 
-public class BookServiceImpl {
+import mate.academy.models.Book;
+import mate.academy.repository.BookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class BookServiceImpl implements BookService {
+    @Autowired
+    private BookRepository repository;
+
+    @Override
+    public Book save(Book book) {
+        return repository.save(book);
+    }
+
+    @Override
+    public List<Book> findAll() {
+        return repository.findAll();
+    }
 }
