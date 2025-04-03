@@ -25,7 +25,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new DataProcessingException("Can't save book in db: " + book.getTitle());
+            throw new DataProcessingException("Can't save books in db: " + book.getTitle());
         }
 
         return book;
