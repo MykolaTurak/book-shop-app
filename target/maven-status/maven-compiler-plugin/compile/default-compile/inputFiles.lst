@@ -1,8 +1,0 @@
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/demo1/Demo1Application.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/models/Book.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/repository/AbstractRepository.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/repository/BookRepository.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/repository/BookRepositoryImpl.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/service/BookService.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/service/BookServiceImpl.java
-/Users/turakmikola/IdeaProjects/book-shop-app/src/main/java/mate/academy/util/HibernateUtil.java

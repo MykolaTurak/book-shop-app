@@ -1,10 +1,10 @@
-package mate.academy.demo1;
+package mate.academy.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Demo1ApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
