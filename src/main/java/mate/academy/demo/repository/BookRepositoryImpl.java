@@ -1,9 +1,6 @@
 package mate.academy.demo.repository;
 
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import java.util.List;
 import mate.academy.demo.exeptions.DataProcessingException;
 import mate.academy.demo.model.Book;
 import org.hibernate.Session;
@@ -12,17 +9,15 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public class BookRepositoryImpl implements BookRepository{
+public class BookRepositoryImpl implements BookRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
     @Override
     public Book save(Book book) {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.persist(book);
             transaction.commit();
