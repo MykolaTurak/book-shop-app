@@ -1,4 +1,4 @@
-package mate.academy.demo;
+package mate.academy.demo.mapper;
 
 import mate.academy.demo.config.MapperConfig;
 import mate.academy.demo.dto.BookDto;
