@@ -1,6 +1,7 @@
 package mate.academy.demo.repository;
 
 import java.util.List;
+import java.util.Optional;
 import mate.academy.demo.exeptions.DataProcessingException;
 import mate.academy.demo.model.Book;
 import org.hibernate.Session;
@@ -41,5 +42,16 @@ public class BookRepositoryImpl implements BookRepository {
         }
 
         return bookList;
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        Book book = null;
+        try (Session session = sessionFactory.openSession()) {
+            book = session.find(Book.class, id);
+        } catch (Exception e) {
+            throw new DataProcessingException("Can't get book by id: " + id);
+        }
+        return book != null ? Optional.of(book) : Optional.empty();
     }
 }
