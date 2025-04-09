@@ -3,6 +3,7 @@ package mate.academy.demo.mapper;
 import mate.academy.demo.config.MapperConfig;
 import mate.academy.demo.dto.BookDto;
 import mate.academy.demo.dto.CreateBookRequestDto;
+import mate.academy.demo.dto.UpdateBookRequestDto;
 import mate.academy.demo.model.Book;
 import org.mapstruct.Mapper;
 
@@ -11,4 +12,6 @@ public interface BookMapper {
     BookDto toDto(Book book);
 
     Book toModel(CreateBookRequestDto createBookRequestDto);
+
+    Book toModel(UpdateBookRequestDto updateBookRequestDto);
 }
