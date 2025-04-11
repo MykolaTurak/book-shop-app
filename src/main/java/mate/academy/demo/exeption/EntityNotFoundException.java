@@ -1,4 +1,4 @@
-package mate.academy.demo.exeptions;
+package mate.academy.demo.exeption;
 
 public class EntityNotFoundException extends RuntimeException {
     public EntityNotFoundException(String message) {
