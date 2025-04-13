@@ -38,8 +38,8 @@ public class BookControler {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteBook(@PathVariable Long id) {
-        return bookService.deleteById(id);
+    public void deleteBook(@PathVariable Long id) {
+        bookService.deleteById(id);
     }
 
     @PutMapping("/{id}")
