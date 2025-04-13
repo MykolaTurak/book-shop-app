@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/books")
+@RequestMapping("/books")
 public class BookControler {
     @Autowired
     private final BookService bookService;
@@ -38,7 +38,7 @@ public class BookControler {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Long id) {
+    public boolean deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
     }
 
