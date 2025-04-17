@@ -28,10 +28,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST);
         body.put("errors", errors);
 
-        return super.handleMethodArgumentNotValid(ex, headers, status, request);
+        return super.handleMethodArgumentNotValid(ex, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     private String getErrorMessage(ObjectError error) {
