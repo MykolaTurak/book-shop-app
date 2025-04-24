@@ -2,8 +2,8 @@ package mate.academy.demo.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mate.academy.demo.dto.BookDto;
-import mate.academy.demo.dto.CreateBookRequestDto;
+import mate.academy.demo.dto.book.BookDto;
+import mate.academy.demo.dto.book.CreateBookRequestDto;
 import mate.academy.demo.exeption.EntityNotFoundException;
 import mate.academy.demo.mapper.BookMapper;
 import mate.academy.demo.model.Book;
