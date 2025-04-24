@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/authentication")
+@RequestMapping("/auth")
 public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/registration")
     public UserResponseDto register(@Valid @RequestBody UserRegistrationRequestDto request)
             throws RegistrationException {
-        return userService.save(request);
+        return userService.register(request);
     }
 }
