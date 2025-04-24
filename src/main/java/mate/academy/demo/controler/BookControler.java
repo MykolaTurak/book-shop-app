@@ -2,6 +2,7 @@ package mate.academy.demo.controler;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.BookDto;
 import mate.academy.demo.dto.CreateBookRequestDto;
@@ -40,7 +41,7 @@ public class BookControler {
 
     @Operation(summary = "Create book", description = "Create book")
     @PostMapping
-    public BookDto createBook(@RequestBody CreateBookRequestDto bookRequestDto) {
+    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookRequestDto) {
         return bookService.save(bookRequestDto);
     }
 
@@ -52,7 +53,7 @@ public class BookControler {
 
     @Operation(summary = "Update book by id", description = "Update single book by it's id")
     @PutMapping("/{id}")
-    public BookDto update(@RequestBody CreateBookRequestDto createBookRequestDto,
+    public BookDto update(@RequestBody @Valid CreateBookRequestDto createBookRequestDto,
                           @PathVariable Long id) {
         return bookService.update(createBookRequestDto, id);
     }
