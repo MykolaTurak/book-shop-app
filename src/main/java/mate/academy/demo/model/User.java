@@ -30,5 +30,6 @@ public class User {
     @Column(nullable = false)
     private String lastName;
     private String shippingAddress;
+    private boolean isDeleted = false;
 }
 
