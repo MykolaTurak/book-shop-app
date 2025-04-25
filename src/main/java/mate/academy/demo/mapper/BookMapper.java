@@ -1,8 +1,8 @@
 package mate.academy.demo.mapper;
 
 import mate.academy.demo.config.MapperConfig;
-import mate.academy.demo.dto.BookDto;
-import mate.academy.demo.dto.CreateBookRequestDto;
+import mate.academy.demo.dto.book.BookDto;
+import mate.academy.demo.dto.book.CreateBookRequestDto;
 import mate.academy.demo.model.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
