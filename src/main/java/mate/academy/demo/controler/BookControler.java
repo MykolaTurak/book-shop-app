@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.book.BookDto;
 import mate.academy.demo.dto.book.CreateBookRequestDto;
 import mate.academy.demo.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookControler {
-    @Autowired
     private final BookService bookService;
 
     @Operation(summary = "Get all books", description = "Get list of all books")
@@ -39,18 +38,21 @@ public class BookControler {
         return bookService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create book", description = "Create book")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookRequestDto) {
         return bookService.save(bookRequestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete book by id", description = "Delete single book by it's id")
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update book by id", description = "Update single book by it's id")
     @PutMapping("/{id}")
     public BookDto update(@RequestBody @Valid CreateBookRequestDto createBookRequestDto,
