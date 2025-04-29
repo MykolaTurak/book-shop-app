@@ -20,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final int TOKEN_PREFIX_LENGTH = 7;
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
@@ -47,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(TOKEN_PREFIX_LENGTH);
+            return bearerToken.substring(TOKEN_PREFIX.length());
         }
         return null;
     }
