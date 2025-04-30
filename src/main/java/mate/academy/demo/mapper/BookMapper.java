@@ -1,7 +1,6 @@
 package mate.academy.demo.mapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import mate.academy.demo.config.MapperConfig;
 import mate.academy.demo.dto.book.BookDto;
 import mate.academy.demo.dto.book.BookDtoWithoutCategoryIds;
@@ -27,7 +26,7 @@ public interface BookMapper {
         if (book.getCategories() != null) {
             List<Long> ids = book.getCategories().stream()
                     .map(Category::getId)
-                    .collect(Collectors.toList());
+                    .toList();
             bookDto.setCategoryIds(ids);
         }
     }

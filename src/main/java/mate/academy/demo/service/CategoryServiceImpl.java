@@ -1,6 +1,5 @@
 package mate.academy.demo.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.category.CategoryDto;
 import mate.academy.demo.dto.category.CreateCategoryRequestDto;
@@ -8,6 +7,7 @@ import mate.academy.demo.exeption.EntityNotFoundException;
 import mate.academy.demo.mapper.CategoryMapper;
 import mate.academy.demo.model.Category;
 import mate.academy.demo.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +41,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> findAll(Pageable pageable) {
-        return categoryRepository.findAll(pageable).stream()
-                .map(categoryMapper::toDto)
-                .toList();
+    public Page<CategoryDto> findAll(Pageable pageable) {
+        return categoryRepository.findAll(pageable)
+                .map(categoryMapper::toDto);
     }
 
     @Override

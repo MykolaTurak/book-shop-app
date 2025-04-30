@@ -1,6 +1,7 @@
 package mate.academy.demo.service;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.book.BookDto;
 import mate.academy.demo.dto.book.CreateBookRequestDto;
@@ -24,12 +25,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto save(CreateBookRequestDto bookRequestDto) {
         Book book = bookMapper.toModel(bookRequestDto);
-        Category category = categoryRepository.findByName(bookRequestDto.getCategoryName())
-                .orElseThrow(
-                        () -> new EntityNotFoundException(
-                                "Can't find category with id: " + bookRequestDto.getCategoryName())
-                );
-        book.getCategories().add(category);
+        Set<Category> categories = new HashSet<>(
+                categoryRepository.findAllById(bookRequestDto.getCategoriesId()));
+        book.setCategories(categories);
 
         return bookMapper.toDto(bookRepository.save(book));
     }
@@ -62,9 +60,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAllByCategoryId(Long id) {
-        return bookRepository.findAllByCategoryId(id).stream()
-                .map(bookMapper::toDto)
-                .toList();
+    public Page<BookDto> findAllByCategoryId(Long id, Pageable pageable) {
+        return bookRepository.findAllByCategoryId(id, pageable)
+                .map(bookMapper::toDto);
     }
 }
