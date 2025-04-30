@@ -15,4 +15,6 @@ public interface BookService {
     void deleteById(Long id);
 
     BookDto update(CreateBookRequestDto createBookRequestDto, Long id);
+
+    Page<BookDto> findAllByCategoryId(Long id, Pageable pageable);
 }
