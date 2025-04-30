@@ -13,6 +13,6 @@ public interface CategoryMapper {
 
     Category toModel(CreateCategoryRequestDto createCategoryRequestDto);
 
-    Category updateModelFromDto(CreateCategoryRequestDto createCategoryRequestDto,
-                                @MappingTarget Category category);
+    void updateModelFromDto(CreateCategoryRequestDto createCategoryRequestDto,
+                            @MappingTarget Category category);
 }

@@ -1,5 +1,6 @@
 package mate.academy.demo.service;
 
+import java.util.List;
 import mate.academy.demo.dto.book.BookDto;
 import mate.academy.demo.dto.book.CreateBookRequestDto;
 import org.springframework.data.domain.Page;
@@ -15,4 +16,6 @@ public interface BookService {
     void deleteById(Long id);
 
     BookDto update(CreateBookRequestDto createBookRequestDto, Long id);
+
+    List<BookDto> findAllByCategoryId(Long id);
 }

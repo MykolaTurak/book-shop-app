@@ -1,12 +1,15 @@
 package mate.academy.demo.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.book.BookDto;
 import mate.academy.demo.dto.book.CreateBookRequestDto;
 import mate.academy.demo.exeption.EntityNotFoundException;
 import mate.academy.demo.mapper.BookMapper;
 import mate.academy.demo.model.Book;
+import mate.academy.demo.model.Category;
 import mate.academy.demo.repository.BookRepository;
+import mate.academy.demo.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
     private final BookMapper bookMapper;
 
     @Override
     public BookDto save(CreateBookRequestDto bookRequestDto) {
         Book book = bookMapper.toModel(bookRequestDto);
+        Category category = categoryRepository.findByName(bookRequestDto.getCategoryName())
+                .orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Can't find category with id: " + bookRequestDto.getCategoryName())
+                );
+        book.getCategories().add(category);
 
         return bookMapper.toDto(bookRepository.save(book));
     }
@@ -49,5 +59,12 @@ public class BookServiceImpl implements BookService {
         bookMapper.updateModelFromDto(createBookRequestDto, book);
 
         return bookMapper.toDto(bookRepository.save(book));
+    }
+
+    @Override
+    public List<BookDto> findAllByCategoryId(Long id) {
+        return bookRepository.findAllByCategoryId(id).stream()
+                .map(bookMapper::toDto)
+                .toList();
     }
 }
