@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 13-add-shopping-carts
+      author: Mykola-Turak
+      changes:
+        - insert:
+            tableName: shopping-carts
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: shopping-carts
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
