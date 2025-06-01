@@ -27,6 +27,7 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
+    @Operation(summary = "Create category", description = "Create a new category")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public CategoryDto create(
@@ -34,6 +35,7 @@ public class CategoryController {
         return categoryService.save(createCategoryRequestDto);
     }
 
+    @Operation(summary = "Update category", description = "Update category by it's id")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public CategoryDto update(@RequestBody @Valid CreateCategoryRequestDto createCategoryRequestDto,
@@ -41,17 +43,20 @@ public class CategoryController {
         return categoryService.update(createCategoryRequestDto, id);
     }
 
+    @Operation(summary = "Delete category", description = "Delete category by it's id")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         categoryService.delete(id);
     }
 
+    @Operation(summary = "Get all categories", description = "Get list of all categories")
     @GetMapping
     Page<CategoryDto> findAll(Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
+    @Operation(summary = "Get category", description = "Get single category by it's id")
     @GetMapping("/{id}")
     public CategoryDto findById(@PathVariable Long id) {
         return categoryService.findById(id);

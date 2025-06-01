@@ -4,7 +4,7 @@ databaseChangeLog:
       author: Mykola_Turak
       changes:
         - createTable:
-            tableName: cart-items
+            tableName: cart_items
             columns:
               - column:
                   name: id
@@ -33,14 +33,14 @@ databaseChangeLog:
                     nullable: false
 
         - addForeignKeyConstraint:
-            baseTableName: cart-items
+            baseTableName: cart_items
             baseColumnNames: shopping_cart_id
-            referencedTableName: shopping-carts
+            referencedTableName: shopping_carts
             referencedColumnNames: id
             constraintName: fk_cart_item_cart
 
         - addForeignKeyConstraint:
-            baseTableName: cart-items
+            baseTableName: cart_items
             baseColumnNames: book_id
             referencedTableName: books
             referencedColumnNames: id

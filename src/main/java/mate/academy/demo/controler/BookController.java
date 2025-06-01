@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/books")
-public class BookControler {
+public class BookController {
     private final BookService bookService;
 
     @Operation(summary = "Get all books", description = "Get list of all books")

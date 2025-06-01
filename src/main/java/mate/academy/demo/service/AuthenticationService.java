@@ -4,5 +4,7 @@ import mate.academy.demo.dto.user.UserLoginRequestDto;
 import mate.academy.demo.dto.user.UserLoginResponseDto;
 
 public interface AuthenticationService {
-    public UserLoginResponseDto authenticate(UserLoginRequestDto userLoginRequestDto);
+    UserLoginResponseDto authenticate(UserLoginRequestDto userLoginRequestDto);
+
+    Long getCurrentUserId();
 }
