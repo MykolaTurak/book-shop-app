@@ -1,6 +1,8 @@
 package mate.academy.demo.controler;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.shoppingcart.CartItemRequestDto;
 import mate.academy.demo.dto.shoppingcart.ShoppingCartDto;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Shopping Cart", description = "Endpoints for managing the shopping cart")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cart")
@@ -34,7 +37,7 @@ public class ShoppingCartController {
             description = "Add book to shopping cart by it's id")
     @PostMapping
     public ShoppingCartDto addBook(
-            @RequestBody CartItemRequestDto cartItemRequestDto) {
+            @Valid @RequestBody CartItemRequestDto cartItemRequestDto) {
         return shoppingCartService.addBook(cartItemRequestDto,
                 authenticationService.getCurrentUserId());
     }
@@ -42,7 +45,7 @@ public class ShoppingCartController {
     @Operation(summary = "Update quantity of item", description = "Update item quantity by it's id")
     @PutMapping(path = "/items/{id}")
     public ShoppingCartDto updateItemQuantity(
-            @RequestBody UpdateShoppingCartRequestDto updateShoppingCartRequestDto,
+            @Valid @RequestBody UpdateShoppingCartRequestDto updateShoppingCartRequestDto,
             @PathVariable Long id) {
         return shoppingCartService.updateItemQuantity(updateShoppingCartRequestDto,
                 id, authenticationService.getCurrentUserId());

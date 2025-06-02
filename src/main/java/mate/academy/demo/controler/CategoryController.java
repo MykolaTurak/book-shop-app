@@ -1,6 +1,7 @@
 package mate.academy.demo.controler;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.book.BookDto;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/categories")
+@Tag(name = "Category Controller",
+        description = "Endpoints for managing categories and their books")
 public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;

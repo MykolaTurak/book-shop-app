@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
                 () -> new RegistrationException("Can't add role for user:" + user.getUsername()));
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
-
-        shoppingCartService.createEmptyCart(user);
-
         user.setRoles(roles);
-        return userMapper.toDto(userRepisitory.save(user));
+        User savedUser = userRepisitory.save(user);
+        shoppingCartService.createEmptyCart(savedUser);
+
+        return userMapper.toDto(savedUser);
     }
 }

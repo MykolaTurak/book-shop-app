@@ -3,7 +3,6 @@ package mate.academy.demo.service;
 import jakarta.transaction.Transactional;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.shoppingcart.CartItemRequestDto;
 import mate.academy.demo.dto.shoppingcart.ShoppingCartDto;
@@ -37,15 +36,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Cant find shopping cart with id: " + userId));
 
-        shoppingCart.getCartItems().forEach(cartItem -> {
-            System.out.println("CartItem id: " + cartItem.getId());
-            if (cartItem.getBook() != null) {
-                System.out.println("Book id: " + cartItem.getBook().getId());
-                System.out.println("Book title: " + cartItem.getBook().getTitle());
-            } else {
-                System.out.println("Book is null");
-            }
-        });
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
@@ -78,11 +68,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                     "Cant find shopping cart with user id: " + userId));
-        CartItem cartItem = shoppingCart.getCartItems().stream()
-                .filter(item -> item.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("CartItem with id " + id
-                        + " not found"));
+        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(id, shoppingCart.getId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "CartItem with id " + id + " not found in shopping cart"));
 
         cartItem.setQuantity(updateShoppingCartRequestDto.getQuantity());
 
@@ -94,9 +82,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Cant find shopping cart with user Id: " + userId));
-        Set<CartItem> items = shoppingCart.getCartItems().stream()
-                .filter(item -> !Objects.equals(item.getId(), id))
-                .collect(Collectors.toSet());
+        Set<CartItem> items = cartItemRepository
+                .findAllByShoppingCartIdAndIdNot(shoppingCart.getId(), id);
 
         shoppingCart.getCartItems().removeIf(item -> Objects.equals(item.getId(), id));
 

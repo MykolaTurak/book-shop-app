@@ -23,7 +23,7 @@ public interface CartItemMapper {
 
     void updateFromDto(UpdateShoppingCartRequestDto dto, @MappingTarget CartItem cartItem);
 
-    @Named("mapBookIdToBook") // Назва, за якою ми посилаємося в @Mapping
+    @Named("mapBookIdToBook")
     default Book mapBookIdToBook(Long bookId) {
         if (bookId == null) {
             return null;
