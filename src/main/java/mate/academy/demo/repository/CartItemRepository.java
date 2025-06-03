@@ -2,9 +2,9 @@ package mate.academy.demo.repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import mate.academy.demo.model.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,8 +14,8 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     Optional<CartItem> findByIdAndShoppingCartId(Long id, Long shoppingCartId);
 
-    @Query("SELECT ci FROM CartItem ci WHERE ci.shoppingCart.id ="
-            + " :shoppingCartId AND ci.id <> :excludedId")
-    Set<CartItem> findAllByShoppingCartIdAndIdNot(@Param("shoppingCartId") Long shoppingCartId,
-                                                  @Param("excludedId") Long excludedId);
+    @Modifying
+    @Query("DELETE FROM CartItem ci WHERE ci.id = :itemId AND ci.shoppingCart.id = :shoppingCartId")
+    void deleteByIdAndShoppingCartId(@Param("itemId") Long itemId,
+                                     @Param("shoppingCartId") Long shoppingCartId);
 }

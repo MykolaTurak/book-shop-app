@@ -53,7 +53,7 @@ public class ShoppingCartController {
 
     @Operation(summary = "Delete item", description = "Delete item by it's id")
     @DeleteMapping(path = "/items/{id}")
-    public ShoppingCartDto deleteItem(@PathVariable Long id) {
-        return shoppingCartService.deleteItemById(id, authenticationService.getCurrentUserId());
+    public void deleteItem(@PathVariable Long id) {
+        shoppingCartService.deleteItemById(id, authenticationService.getCurrentUserId());
     }
 }

@@ -1,8 +1,6 @@
 package mate.academy.demo.service;
 
 import jakarta.transaction.Transactional;
-import java.util.Objects;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.shoppingcart.CartItemRequestDto;
 import mate.academy.demo.dto.shoppingcart.ShoppingCartDto;
@@ -78,16 +76,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto deleteItemById(Long id, Long userId) {
+    public void deleteItemById(Long id, Long userId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Cant find shopping cart with user Id: " + userId));
-        Set<CartItem> items = cartItemRepository
-                .findAllByShoppingCartIdAndIdNot(shoppingCart.getId(), id);
-
-        shoppingCart.getCartItems().removeIf(item -> Objects.equals(item.getId(), id));
-
-        return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
+        cartItemRepository.deleteByIdAndShoppingCartId(id, shoppingCart.getId());
     }
 
     @Override
