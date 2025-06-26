@@ -32,7 +32,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto findShoppingCartById(Long userId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Cant find shopping cart with id: " + userId));
+                        "Cant find shopping cart by id: " + userId));
 
         return shoppingCartMapper.toDto(shoppingCart);
     }
