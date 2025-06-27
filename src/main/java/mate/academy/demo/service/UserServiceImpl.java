@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto userRegistrationRequestDto)
@@ -33,14 +34,17 @@ public class UserServiceImpl implements UserService {
                     + userRegistrationRequestDto.email() + "\" has been already used");
         }
 
-        User user = userMapper.toModel(userRegistrationRequestDto);
-        user.setPassword(passwordEncoder.encode(userRegistrationRequestDto.password()));
+        User userModel = userMapper.toModel(userRegistrationRequestDto);
+        userModel.setPassword(passwordEncoder.encode(userRegistrationRequestDto.password()));
         Role userRole = roleRepository.findByRoleName(RoleName.USER).orElseThrow(
-                () -> new RegistrationException("Can't add role for user:" + user.getUsername()));
+                () -> new RegistrationException("Can't add role for user:"
+                        + userModel.getUsername()));
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
+        userModel.setRoles(roles);
+        User savedUser = userRepisitory.save(userModel);
+        shoppingCartService.createEmptyCart(savedUser);
 
-        user.setRoles(roles);
-        return userMapper.toDto(userRepisitory.save(user));
+        return userMapper.toDto(savedUser);
     }
 }
