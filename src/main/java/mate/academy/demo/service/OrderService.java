@@ -1,6 +1,5 @@
 package mate.academy.demo.service;
 
-import jakarta.validation.Valid;
 import mate.academy.demo.dto.order.OrderCreateRequestDto;
 import mate.academy.demo.dto.order.OrderDto;
 import mate.academy.demo.dto.order.OrderUpdateRequestDto;
@@ -11,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 public interface OrderService {
     Page<OrderDto> findAll(Long currentUserId, Pageable pageable);
 
-    OrderDto create(@Valid OrderCreateRequestDto createRequestDto, Long currentUserId);
+    OrderDto create(OrderCreateRequestDto createRequestDto, Long currentUserId);
 
-    void updateStatus(OrderUpdateRequestDto updateRequestDto, @Valid Long id);
+    void updateStatus(OrderUpdateRequestDto updateRequestDto, Long id);
 
     Page<OrderItemDto> findAllById(Long orderId, Long userId, Pageable pageable);
 

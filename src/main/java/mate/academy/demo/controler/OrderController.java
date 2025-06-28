@@ -3,7 +3,6 @@ package mate.academy.demo.controler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.order.OrderCreateRequestDto;
 import mate.academy.demo.dto.order.OrderDto;
@@ -58,7 +57,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public void updateStatus(@PathVariable Long id,
-                             @NotNull @RequestBody OrderUpdateRequestDto updateRequestDto) {
+                             @Valid @RequestBody OrderUpdateRequestDto updateRequestDto) {
         orderService.updateStatus(updateRequestDto, id);
     }
 }

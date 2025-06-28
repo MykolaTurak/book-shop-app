@@ -11,6 +11,7 @@ import mate.academy.demo.dto.order.OrderDto;
 import mate.academy.demo.dto.order.OrderUpdateRequestDto;
 import mate.academy.demo.dto.orderitem.OrderItemDto;
 import mate.academy.demo.exeption.EntityNotFoundException;
+import mate.academy.demo.exeption.OrderProcessingException;
 import mate.academy.demo.mapper.CartItemMapper;
 import mate.academy.demo.mapper.OrderItemMapper;
 import mate.academy.demo.mapper.OrderMapper;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
@@ -45,7 +47,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public OrderDto create(OrderCreateRequestDto createRequestDto, Long currentUserId) {
         Order order = orderMapper.toModel(createRequestDto);
         Order finalOrder = build(order, currentUserId);
@@ -83,6 +84,10 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Cant find shopping cart with user Id: " + userId));
 
+        if (shoppingCart.getCartItems().isEmpty()) {
+            throw new OrderProcessingException("Shopping cart is empty");
+        }
+
         order.setUser(shoppingCart.getUser());
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Status.PENDING);
@@ -99,10 +104,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderItems(orderItems);
         order.setTotal(total);
-
-        for (CartItem cartItem: shoppingCart.getCartItems()) {
-            shoppingCartService.deleteItemById(cartItem.getId(), userId);
-        }
+        shoppingCart.clearCart();
 
         return order;
     }
