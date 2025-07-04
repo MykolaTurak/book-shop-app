@@ -12,6 +12,7 @@ import mate.academy.demo.service.AuthenticationService;
 import mate.academy.demo.service.OrderService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,6 +51,7 @@ public class OrderController {
 
     @Operation(summary = "Place order", description = "Placing order of current user")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public OrderDto place(@Valid @RequestBody OrderCreateRequestDto createRequestDto) {
         return orderService.create(createRequestDto, authenticationService.getCurrentUserId());
     }
