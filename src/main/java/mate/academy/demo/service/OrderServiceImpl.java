@@ -1,9 +1,7 @@
 package mate.academy.demo.service;
 
 import jakarta.transaction.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.demo.dto.order.OrderCreateRequestDto;
@@ -15,7 +13,6 @@ import mate.academy.demo.exeption.OrderProcessingException;
 import mate.academy.demo.mapper.CartItemMapper;
 import mate.academy.demo.mapper.OrderItemMapper;
 import mate.academy.demo.mapper.OrderMapper;
-import mate.academy.demo.model.CartItem;
 import mate.academy.demo.model.Order;
 import mate.academy.demo.model.OrderItem;
 import mate.academy.demo.model.ShoppingCart;
@@ -85,27 +82,24 @@ public class OrderServiceImpl implements OrderService {
                         "Cant find shopping cart with user Id: " + userId));
 
         if (shoppingCart.getCartItems().isEmpty()) {
-            throw new OrderProcessingException("Shopping cart is empty");
+            throw new OrderProcessingException("Shopping cart with user id: "
+                    + userId + " is empty");
         }
 
         order.setUser(shoppingCart.getUser());
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Status.PENDING);
 
-        Set<OrderItem> orderItems = new HashSet<>();
-        BigDecimal total = BigDecimal.ZERO;
+        OrderItem orderItem = cartItemMapper.toOrderItem(shoppingCart.getCartItems());
+        orderItem.setOrder(order);
 
-        for (CartItem cartItem : shoppingCart.getCartItems()) {
-            OrderItem orderItem = cartItemMapper.toOrderItem(cartItem);
-            orderItem.setOrder(order);
-            orderItems.add(orderItem);
-            total = total.add(orderItem.getPrice());
-        }
-
+        Set<OrderItem> orderItems = Set.of(orderItem);
         order.setOrderItems(orderItems);
-        order.setTotal(total);
+        order.setTotal(orderItem.getPrice());
+
         shoppingCart.clearCart();
 
         return order;
     }
+
 }

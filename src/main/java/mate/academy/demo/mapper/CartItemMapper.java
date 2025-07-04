@@ -1,6 +1,7 @@
 package mate.academy.demo.mapper;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import mate.academy.demo.config.MapperConfig;
 import mate.academy.demo.dto.cartitem.CartItemDto;
 import mate.academy.demo.dto.shoppingcart.CartItemRequestDto;
@@ -23,10 +24,24 @@ public interface CartItemMapper {
     @Mapping(target = "bookTitle", source = "book.title")
     CartItemDto toDto(CartItem cartItem);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "price", source = "cartItem",
-            qualifiedByName = "calculateOrderItemPrice")
-    OrderItem toOrderItem(CartItem cartItem);
+    default OrderItem toOrderItem(Set<CartItem> cartItems) {
+        if (cartItems == null || cartItems.isEmpty()) {
+            throw new IllegalArgumentException("Cannot map empty cart items to OrderItem");
+        }
+
+        OrderItem orderItem = new OrderItem();
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        for (CartItem cartItem : cartItems) {
+            BigDecimal itemPrice = cartItem.getBook().getPrice()
+                    .multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            totalPrice = totalPrice.add(itemPrice);
+        }
+
+        orderItem.setPrice(totalPrice);
+        return orderItem;
+    }
 
     void updateFromDto(UpdateShoppingCartRequestDto dto, @MappingTarget CartItem cartItem);
 
@@ -41,11 +56,10 @@ public interface CartItemMapper {
     }
 
     @Named("calculateOrderItemPrice")
-    default BigDecimal calculatePrice(CartItem cartItem) {
-        if (cartItem != null && cartItem.getBook() != null
-                && cartItem.getBook().getPrice() != null) {
-            return cartItem.getBook().getPrice().multiply(new BigDecimal(cartItem.getQuantity()));
-        }
-        return BigDecimal.ZERO;
+    default BigDecimal getTotal(Set<CartItem> cartItems) {
+        return cartItems.stream()
+                .map(cartItem -> cartItem.getBook().getPrice()
+                        .multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
