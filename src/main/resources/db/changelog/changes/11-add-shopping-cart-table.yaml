@@ -16,7 +16,6 @@ databaseChangeLog:
                   name: is_deleted
                   type: TINYINT(1)
                   defaultValueBoolean: false
-
         - addForeignKeyConstraint:
             baseTableName: shopping_carts
             baseColumnNames: id
