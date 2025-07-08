@@ -1,0 +1,3 @@
+DELETE FROM categories
+WHERE id = 1;
+ALTER TABLE categories AUTO_INCREMENT = 1;
