@@ -1,17 +1,18 @@
 package mate.academy.demo.service;
 
+import static mate.academy.demo.util.TestUtil.getFirstBook;
+import static mate.academy.demo.util.TestUtil.getFirstBookDto;
+import static mate.academy.demo.util.TestUtil.getFirstCategory;
+import static mate.academy.demo.util.TestUtil.getFirstCreateBookDto;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import mate.academy.demo.dto.book.BookDto;
-import mate.academy.demo.dto.book.CreateBookRequestDto;
 import mate.academy.demo.exeption.EntityNotFoundException;
 import mate.academy.demo.mapper.BookMapper;
 import mate.academy.demo.model.Book;
-import mate.academy.demo.model.Category;
 import mate.academy.demo.repository.BookRepository;
 import mate.academy.demo.repository.CategoryRepository;
 import org.junit.Assert;
@@ -44,48 +45,17 @@ public class BookServiceTest {
             Save single book to db
             """)
     void save_ValidObject_ShouldReturnBookWithId() {
-        Long categoryId = 1L;
-        Category category = new Category();
-        category.setId(categoryId);
-        category.setName("Fantasy");
+        BookDto expected = getFirstBookDto();
 
-        CreateBookRequestDto createBookRequestDto = new CreateBookRequestDto();
-        createBookRequestDto.setTitle("The Java Chronicles");
-        createBookRequestDto.setAuthor("Elena Novak");
-        createBookRequestDto.setIsbn("978-1-56619-909-4");
-        createBookRequestDto.setPrice(BigDecimal.valueOf(39.99));
-        createBookRequestDto.setDescription("A deep dive into modern Java development.");
-        createBookRequestDto.setCoverImage("java_chronicles.jpg");
-        createBookRequestDto.setCategoriesId(List.of(categoryId));
+        Mockito.when(bookRepository.save(getFirstBook())).thenReturn(getFirstBook());
+        Mockito.when(categoryRepository.findAllById(List.of(getFirstCategory().getId())))
+                .thenReturn(List.of(getFirstCategory()));
+        Mockito.when(bookMapper.toModel(getFirstCreateBookDto())).thenReturn(getFirstBook());
+        Mockito.when(bookMapper.toDto(getFirstBook())).thenReturn(expected);
 
-        Book book = new Book();
-        book.setTitle("The Java Chronicles");
-        book.setAuthor("Elena Novak");
-        book.setIsbn("978-1-56619-909-4");
-        book.setPrice(BigDecimal.valueOf(39.99));
-        book.setDescription("A deep dive into modern Java development.");
-        book.setCoverImage("java_chronicles.jpg");
+        BookDto actual = bookService.save(getFirstCreateBookDto());
 
-        Long bookId = 1L;
-        BookDto expected = new BookDto();
-        expected.setId(bookId);
-        expected.setTitle("The Java Chronicles");
-        expected.setAuthor("Elena Novak");
-        expected.setIsbn("978-1-56619-909-4");
-        expected.setPrice(BigDecimal.valueOf(39.99));
-        expected.setDescription("A deep dive into modern Java development.");
-        expected.setCoverImage("java_chronicles.jpg");
-        expected.setCategoryIds(List.of(bookId));
-
-        Mockito.when(bookRepository.save(book)).thenReturn(book);
-        Mockito.when(categoryRepository.findAllById(List.of(categoryId)))
-                .thenReturn(List.of(category));
-        Mockito.when(bookMapper.toModel(createBookRequestDto)).thenReturn(book);
-        Mockito.when(bookMapper.toDto(book)).thenReturn(expected);
-
-        BookDto actual = bookService.save(createBookRequestDto);
-
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -93,35 +63,16 @@ public class BookServiceTest {
             Find all books and return Page
             """)
     void findAll_ShouldReturnPageOfBooks() {
-        Long bookId = 1L;
-        Book book = new Book();
-        book.setId(bookId);
-        book.setTitle("The Java Chronicles");
-        book.setAuthor("Elena Novak");
-        book.setIsbn("978-1-56619-909-4");
-        book.setPrice(BigDecimal.valueOf(39.99));
-        book.setDescription("A deep dive into modern Java development.");
-        book.setCoverImage("java_chronicles.jpg");
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId(bookId);
-        bookDto.setTitle("The Java Chronicles");
-        bookDto.setAuthor("Elena Novak");
-        bookDto.setIsbn("978-1-56619-909-4");
-        bookDto.setPrice(BigDecimal.valueOf(39.99));
-        bookDto.setDescription("A deep dive into modern Java development.");
-        bookDto.setCoverImage("java_chronicles.jpg");
-        bookDto.setCategoryIds(List.of(bookId));
         Pageable pageable = PageRequest.of(0, 10);
-        Page<BookDto> expected = new PageImpl<>(List.of(bookDto), pageable, 1L);
+        Page<BookDto> expected = new PageImpl<>(List.of(getFirstBookDto()), pageable, 1L);
 
-        Page<Book> bookPage = new PageImpl<>(List.of(book), pageable, 1L);
+        Page<Book> bookPage = new PageImpl<>(List.of(getFirstBook()), pageable, 1L);
         Mockito.when(bookRepository.findAll(pageable)).thenReturn(bookPage);
-        Mockito.when(bookMapper.toDto(book)).thenReturn(bookDto);
+        Mockito.when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
 
         Page<BookDto> actual = bookService.findAll(pageable);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -129,38 +80,15 @@ public class BookServiceTest {
             Find single book by id
             """)
     void findById_WithValidId_ShouldReturnValidBook() {
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Fantasy");
+        BookDto expected = getFirstBookDto();
 
-        Long bookId = 1L;
-        Book book = new Book();
-        book.setId(bookId);
-        book.setTitle("The Java Chronicles");
-        book.setAuthor("Elena Novak");
-        book.setIsbn("978-1-56619-909-4");
-        book.setPrice(BigDecimal.valueOf(39.99));
-        book.setDescription("A deep dive into modern Java development.");
-        book.setCoverImage("java_chronicles.jpg");
-        book.setCategories(Set.of(category));
+        Mockito.when(bookRepository.findById(getFirstBook().getId()))
+                .thenReturn(Optional.of(getFirstBook()));
+        Mockito.when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
 
-        BookDto bookDto = new BookDto();
-        bookDto.setId(bookId);
-        bookDto.setTitle("The Java Chronicles");
-        bookDto.setAuthor("Elena Novak");
-        bookDto.setIsbn("978-1-56619-909-4");
-        bookDto.setPrice(BigDecimal.valueOf(39.99));
-        bookDto.setDescription("A deep dive into modern Java development.");
-        bookDto.setCoverImage("java_chronicles.jpg");
-        bookDto.setCategoryIds(List.of(bookId));
-        BookDto expected = bookDto;
+        BookDto actual = bookService.findById(getFirstBook().getId());
 
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        Mockito.when(bookMapper.toDto(book)).thenReturn(bookDto);
-
-        BookDto actual = bookService.findById(bookId);
-
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -175,6 +103,6 @@ public class BookServiceTest {
         Exception actual = Assert.assertThrows(EntityNotFoundException.class,
                 () -> bookService.findById(anyLong()));
 
-        Assert.assertEquals(expectedMessage, actual.getMessage());
+        assertEquals(expectedMessage, actual.getMessage());
     }
 }

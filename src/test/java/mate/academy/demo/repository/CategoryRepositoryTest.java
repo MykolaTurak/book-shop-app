@@ -1,9 +1,11 @@
 package mate.academy.demo.repository;
 
+import static mate.academy.demo.util.TestUtil.getFirstCategory;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Optional;
 import mate.academy.demo.config.CustomMySqlContainer;
 import mate.academy.demo.model.Category;
-import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +38,12 @@ public class CategoryRepositoryTest {
             Find category by name
             """)
     void findByName_WithValidName_ShouldReturnValidCategory() {
-        Long categoryId = 1L;
-        Category category = new Category();
-        category.setId(categoryId);
-        category.setName("Fantasy");
-        Optional<Category> expected = Optional.of(category);
+        Optional<Category> expected = Optional.of(getFirstCategory());
 
-        Optional<Category> actual = categoryRepository.findById(categoryId);
+        Optional<Category> actual = categoryRepository.findById(
+                getFirstCategory().getId());
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -56,6 +55,6 @@ public class CategoryRepositoryTest {
 
         Optional<Category> actual = categoryRepository.findByName("Fantasy");
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

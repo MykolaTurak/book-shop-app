@@ -1,13 +1,13 @@
 package mate.academy.demo.repository;
 
-import java.math.BigDecimal;
+import static mate.academy.demo.util.TestUtil.getFirstBook;
+import static mate.academy.demo.util.TestUtil.getSecondBook;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import mate.academy.demo.config.CustomMySqlContainer;
 import mate.academy.demo.model.Book;
-import mate.academy.demo.model.Category;
-import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,36 +42,12 @@ public class BookRepositoryTest {
             Find two books by single category
             """)
     void findAllByCategoryId_TwoBooksByCategory_Ok() {
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Fantasy");
-
-        Book book1 = new Book();
-        book1.setId(1L);
-        book1.setTitle("The Java Chronicles");
-        book1.setAuthor("Elena Novak");
-        book1.setIsbn("978-1-56619-909-4");
-        book1.setPrice(BigDecimal.valueOf(39.99));
-        book1.setDescription("A deep dive into modern Java development.");
-        book1.setCoverImage("java_chronicles.jpg");
-        book1.setCategories(Set.of(category));
-
-        Book book2 = new Book();
-        book2.setId(2L);
-        book2.setTitle("Spring Boot in Action");
-        book2.setAuthor("John Doe");
-        book2.setIsbn("978-0-12345-678-9");
-        book2.setPrice(BigDecimal.valueOf(29.99));
-        book2.setDescription("Practical guide for building microservices.");
-        book2.setCoverImage("spring_boot.jpg");
-        book2.setCategories(Set.of(category));
-
-        List<Book> expected = List.of(book1, book2);
+        List<Book> expected = List.of(getFirstBook(), getSecondBook());
         Pageable pageable = PageRequest.of(0, 10);
 
         List<Book> actual = bookRepository.findAllByCategoryId(1L, pageable).toList();
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -88,6 +64,6 @@ public class BookRepositoryTest {
 ;
         List<Book> actual = bookRepository.findAllByCategoryId(3L, pageable).toList();
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }
