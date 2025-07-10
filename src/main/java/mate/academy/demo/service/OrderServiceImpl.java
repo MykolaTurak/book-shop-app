@@ -1,6 +1,7 @@
 package mate.academy.demo.service;
 
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import mate.academy.demo.model.Order;
 import mate.academy.demo.model.OrderItem;
 import mate.academy.demo.model.ShoppingCart;
 import mate.academy.demo.model.Status;
+import mate.academy.demo.model.User;
 import mate.academy.demo.repository.CartItemRepository;
 import mate.academy.demo.repository.OrderItemRepository;
 import mate.academy.demo.repository.OrderRepository;
@@ -86,16 +88,22 @@ public class OrderServiceImpl implements OrderService {
                     + userId + " is empty");
         }
 
-        order.setUser(shoppingCart.getUser());
+        User user = new User();
+        user.setId(shoppingCart.getUser().getId());
+        order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Status.PENDING);
 
-        OrderItem orderItem = cartItemMapper.toOrderItem(shoppingCart.getCartItems());
-        orderItem.setOrder(order);
+        BigDecimal totalPrice = new BigDecimal("0.0");
+        Set<OrderItem> orderItems = cartItemMapper.toOrderItem(shoppingCart.getCartItems());
+        for (OrderItem orderItem: orderItems) {
+            orderItem.setOrder(order);
+            totalPrice = totalPrice.add(orderItem.getPrice()
+                    .multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+        }
 
-        Set<OrderItem> orderItems = Set.of(orderItem);
         order.setOrderItems(orderItems);
-        order.setTotal(orderItem.getPrice());
+        order.setTotal(totalPrice);
 
         shoppingCart.clearCart();
 

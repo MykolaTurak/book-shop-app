@@ -1,6 +1,7 @@
 package mate.academy.demo.mapper;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import mate.academy.demo.config.MapperConfig;
 import mate.academy.demo.dto.cartitem.CartItemDto;
@@ -24,23 +25,22 @@ public interface CartItemMapper {
     @Mapping(target = "bookTitle", source = "book.title")
     CartItemDto toDto(CartItem cartItem);
 
-    default OrderItem toOrderItem(Set<CartItem> cartItems) {
+    default Set<OrderItem> toOrderItem(Set<CartItem> cartItems) {
         if (cartItems == null || cartItems.isEmpty()) {
             throw new IllegalArgumentException("Cannot map empty cart items to OrderItem");
         }
 
-        OrderItem orderItem = new OrderItem();
-
-        BigDecimal totalPrice = BigDecimal.ZERO;
+        Set<OrderItem> orderItems = new HashSet<>();
 
         for (CartItem cartItem : cartItems) {
-            BigDecimal itemPrice = cartItem.getBook().getPrice()
-                    .multiply(BigDecimal.valueOf(cartItem.getQuantity()));
-            totalPrice = totalPrice.add(itemPrice);
+            OrderItem orderItem = new OrderItem();
+            orderItem.setPrice(cartItem.getBook().getPrice());
+            orderItem.setBook(cartItem.getBook());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItems.add(orderItem);
         }
 
-        orderItem.setPrice(totalPrice);
-        return orderItem;
+        return orderItems;
     }
 
     void updateFromDto(UpdateShoppingCartRequestDto dto, @MappingTarget CartItem cartItem);
