@@ -5,7 +5,6 @@ import static mate.academy.demo.util.TestUtil.getFirstCreateBookDto;
 import static mate.academy.demo.util.TestUtil.getSecondBookDto;
 import static mate.academy.demo.util.TestUtil.getThirdBookDto;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -144,7 +143,8 @@ public class BookControllerTest {
             Find book by not valid id
             """)
     void findBookById_WithNotValidId_ShouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/books/{id}", anyLong()))
+        Long nonExistId = 1L;
+        mockMvc.perform(get("/books/{id}", nonExistId))
                 .andExpect(status().isNotFound());
     }
 
@@ -170,7 +170,8 @@ public class BookControllerTest {
             Delete book with not valid id
             """)
     void deleteBook_WithNotValidId_ShouldReturnNotFound() throws Exception {
-        mockMvc.perform(delete("/books/{id}", anyLong()))
+        Long nonExistId = 1L;
+        mockMvc.perform(delete("/books/{id}", nonExistId))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }
@@ -210,8 +211,9 @@ public class BookControllerTest {
             Update book with not valid id
             """)
     void updateBook_WithNotValidId_ShouldReturnNotFound() throws Exception {
+        Long nonExistId = 1L;
         String jsonRequest = objectMapper.writeValueAsString(getFirstCreateBookDto());
-        mockMvc.perform(put("/books/{id}", anyLong())
+        mockMvc.perform(put("/books/{id}", nonExistId)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON)
                 )

@@ -7,7 +7,6 @@ import static mate.academy.demo.util.TestUtil.getFirstCategoryRequestDto;
 import static mate.academy.demo.util.TestUtil.getSecondBookDto;
 import static mate.academy.demo.util.TestUtil.getWrongCategoryRequestDto;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -118,8 +117,9 @@ public class CategoryControllerTest {
             """)
     void update_WithNotValidRequest_ShouldReturnNotFound() throws Exception {
         String jsonRequest = objectMapper.writeValueAsString(getFirstCategoryRequestDto());
+        Long nonExistId = 1L;
         mockMvc.perform(
-                        put("/categories/{id}", anyLong())
+                        put("/categories/{id}", nonExistId)
                                 .content(jsonRequest)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -157,8 +157,9 @@ public class CategoryControllerTest {
             Find category by not valid id
             """)
     void findById_WithNotValidId_ShouldReturnValidDto() throws Exception {
+        Long nonExistId = 1L;
         mockMvc.perform(
-                get("/categories/{id}", anyLong()))
+                get("/categories/{id}", nonExistId))
                 .andExpect(status().isNotFound());
     }
 
@@ -183,7 +184,8 @@ public class CategoryControllerTest {
             Delete category by not valid id
             """)
     void delete_WithNotValidId_ShouldReturnNotFound() throws Exception {
-        mockMvc.perform(delete("/categories/{id}", anyLong()))
+        Long nonExistId = 1L;
+        mockMvc.perform(delete("/categories/{id}", nonExistId))
                 .andExpect(status().isNotFound());
     }
 
