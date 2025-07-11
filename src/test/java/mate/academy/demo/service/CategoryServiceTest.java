@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,11 +45,11 @@ public class CategoryServiceTest {
 
         CategoryDto actual = categoryService.save(getFirstCategoryRequestDto());
 
+        assertEquals(expected, actual);
+
         verify(categoryRepository).save(getFirstCategory());
         verify(categoryMapper).toModel(getFirstCategoryRequestDto());
         verify(categoryMapper).toDto(getFirstCategory());
-
-        assertEquals(expected, actual);
     }
 
     @Test
@@ -108,7 +107,6 @@ public class CategoryServiceTest {
 
         verify(categoryRepository).findById(getFirstCategory().getId());
         verify(categoryMapper).toDto(getFirstCategory());
-
 
         assertEquals(expected, actual);
     }

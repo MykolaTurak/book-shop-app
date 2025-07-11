@@ -55,12 +55,12 @@ public class BookServiceTest {
 
         BookDto actual = bookService.save(getFirstCreateBookDto());
 
+        assertEquals(expected, actual);
+
         verify(bookRepository).save(getFirstBook());
         verify(categoryRepository).findAllById(List.of(getFirstCategory().getId()));
         verify(bookMapper).toModel(getFirstCreateBookDto());
         verify(bookMapper).toDto(getFirstBook());
-
-        assertEquals(expected, actual);
     }
 
     @Test
@@ -69,11 +69,11 @@ public class BookServiceTest {
             """)
     void findAll_ShouldReturnPageOfBooks() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<BookDto> expected = new PageImpl<>(List.of(getFirstBookDto()), pageable, 1L);
 
         Page<Book> bookPage = new PageImpl<>(List.of(getFirstBook()), pageable, 1L);
         when(bookRepository.findAll(pageable)).thenReturn(bookPage);
         when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
+        Page<BookDto> expected = new PageImpl<>(List.of(getFirstBookDto()), pageable, 1L);
 
         Page<BookDto> actual = bookService.findAll(pageable);
 
@@ -88,11 +88,10 @@ public class BookServiceTest {
             Find single book by id
             """)
     void findById_WithValidId_ShouldReturnValidBook() {
-        BookDto expected = getFirstBookDto();
-
         when(bookRepository.findById(getFirstBook().getId()))
                 .thenReturn(Optional.of(getFirstBook()));
         when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
+        BookDto expected = getFirstBookDto();
 
         BookDto actual = bookService.findById(getFirstBook().getId());
 
