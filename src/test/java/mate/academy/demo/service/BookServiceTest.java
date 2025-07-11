@@ -5,7 +5,9 @@ import static mate.academy.demo.util.TestUtil.getFirstBookDto;
 import static mate.academy.demo.util.TestUtil.getFirstCategory;
 import static mate.academy.demo.util.TestUtil.getFirstCreateBookDto;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +17,11 @@ import mate.academy.demo.mapper.BookMapper;
 import mate.academy.demo.model.Book;
 import mate.academy.demo.repository.BookRepository;
 import mate.academy.demo.repository.CategoryRepository;
-import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -47,13 +47,18 @@ public class BookServiceTest {
     void save_ValidObject_ShouldReturnBookWithId() {
         BookDto expected = getFirstBookDto();
 
-        Mockito.when(bookRepository.save(getFirstBook())).thenReturn(getFirstBook());
-        Mockito.when(categoryRepository.findAllById(List.of(getFirstCategory().getId())))
+        when(bookRepository.save(getFirstBook())).thenReturn(getFirstBook());
+        when(categoryRepository.findAllById(List.of(getFirstCategory().getId())))
                 .thenReturn(List.of(getFirstCategory()));
-        Mockito.when(bookMapper.toModel(getFirstCreateBookDto())).thenReturn(getFirstBook());
-        Mockito.when(bookMapper.toDto(getFirstBook())).thenReturn(expected);
+        when(bookMapper.toModel(getFirstCreateBookDto())).thenReturn(getFirstBook());
+        when(bookMapper.toDto(getFirstBook())).thenReturn(expected);
 
         BookDto actual = bookService.save(getFirstCreateBookDto());
+
+        verify(bookRepository).save(getFirstBook());
+        verify(categoryRepository).findAllById(List.of(getFirstCategory().getId()));
+        verify(bookMapper).toModel(getFirstCreateBookDto());
+        verify(bookMapper).toDto(getFirstBook());
 
         assertEquals(expected, actual);
     }
@@ -67,10 +72,13 @@ public class BookServiceTest {
         Page<BookDto> expected = new PageImpl<>(List.of(getFirstBookDto()), pageable, 1L);
 
         Page<Book> bookPage = new PageImpl<>(List.of(getFirstBook()), pageable, 1L);
-        Mockito.when(bookRepository.findAll(pageable)).thenReturn(bookPage);
-        Mockito.when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
+        when(bookRepository.findAll(pageable)).thenReturn(bookPage);
+        when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
 
         Page<BookDto> actual = bookService.findAll(pageable);
+
+        verify(bookRepository).findAll(pageable);
+        verify(bookMapper).toDto(getFirstBook());
 
         assertEquals(expected, actual);
     }
@@ -82,11 +90,14 @@ public class BookServiceTest {
     void findById_WithValidId_ShouldReturnValidBook() {
         BookDto expected = getFirstBookDto();
 
-        Mockito.when(bookRepository.findById(getFirstBook().getId()))
+        when(bookRepository.findById(getFirstBook().getId()))
                 .thenReturn(Optional.of(getFirstBook()));
-        Mockito.when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
+        when(bookMapper.toDto(getFirstBook())).thenReturn(getFirstBookDto());
 
         BookDto actual = bookService.findById(getFirstBook().getId());
+
+        verify(bookRepository).findById(getFirstBook().getId());
+        verify(bookMapper).toDto(getFirstBook());
 
         assertEquals(expected, actual);
     }
@@ -96,12 +107,15 @@ public class BookServiceTest {
             Throw EntityNotFoundException by non exist id
             """)
     void findById_NonExistId_ShouldReturnException() {
-        String expectedMessage = "Can't find book with id: 0";
+        Long bookId = 1L;
+        String expectedMessage = "Can't find book with id: " + bookId;
 
-        Mockito.when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
-        Exception actual = Assert.assertThrows(EntityNotFoundException.class,
-                () -> bookService.findById(anyLong()));
+        Exception actual = assertThrows(EntityNotFoundException.class,
+                () -> bookService.findById(bookId));
+
+        verify(bookRepository).findById(bookId);
 
         assertEquals(expectedMessage, actual.getMessage());
     }

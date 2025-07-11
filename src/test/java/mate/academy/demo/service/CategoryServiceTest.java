@@ -1,16 +1,17 @@
 package mate.academy.demo.service;
 
 import static mate.academy.demo.util.TestUtil.getFirstCategory;
+import static mate.academy.demo.util.TestUtil.getFirstCategoryDto;
 import static mate.academy.demo.util.TestUtil.getFirstCategoryRequestDto;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import jdk.jfr.Description;
 import mate.academy.demo.dto.category.CategoryDto;
-import mate.academy.demo.dto.category.CreateCategoryRequestDto;
 import mate.academy.demo.exeption.EntityNotFoundException;
 import mate.academy.demo.mapper.CategoryMapper;
-import mate.academy.demo.model.Category;
 import mate.academy.demo.repository.CategoryRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
@@ -37,20 +38,17 @@ public class CategoryServiceTest {
             Save category with valid dto
             """)
     void save_WithValidData_ShouldReturnDtoWithId() {
-        Category category = new Category();
-        category.setName("Fantasy");
-        category.setDescription("description");
+        CategoryDto expected = getFirstCategoryDto();
 
-        CreateCategoryRequestDto createCategoryRequestDto =
-                new CreateCategoryRequestDto("Fantasy", "description");
+        when(categoryRepository.save(getFirstCategory())).thenReturn(getFirstCategory());
+        when(categoryMapper.toModel(getFirstCategoryRequestDto())).thenReturn(getFirstCategory());
+        when(categoryMapper.toDto(getFirstCategory())).thenReturn(expected);
 
-        CategoryDto expected = new CategoryDto(1L,"Fantasy", "description"); // перенесено нижче
+        CategoryDto actual = categoryService.save(getFirstCategoryRequestDto());
 
-        Mockito.when(categoryRepository.save(category)).thenReturn(category);
-        Mockito.when(categoryMapper.toModel(createCategoryRequestDto)).thenReturn(category);
-        Mockito.when(categoryMapper.toDto(category)).thenReturn(expected);
-
-        CategoryDto actual = categoryService.save(createCategoryRequestDto);
+        verify(categoryRepository).save(getFirstCategory());
+        verify(categoryMapper).toModel(getFirstCategoryRequestDto());
+        verify(categoryMapper).toDto(getFirstCategory());
 
         assertEquals(expected, actual);
     }
@@ -60,14 +58,17 @@ public class CategoryServiceTest {
             Update category with valid data
             """)
     void update_WithValidData_ShouldReturnUpdatedDto() {
-        Mockito.when(categoryRepository.save(getFirstCategory())).thenReturn(getFirstCategory());
+        when(categoryRepository.save(getFirstCategory())).thenReturn(getFirstCategory());
         Long categoryId = 1L;
         CategoryDto expected = new CategoryDto(categoryId,"Fantasy", "description");
-        Mockito.when(categoryRepository.findById(categoryId))
+        when(categoryRepository.findById(categoryId))
                 .thenReturn(Optional.of(getFirstCategory()));
-        Mockito.when(categoryMapper.toDto(getFirstCategory())).thenReturn(expected);
+        when(categoryMapper.toDto(getFirstCategory())).thenReturn(expected);
 
         CategoryDto actual = categoryService.update(getFirstCategoryRequestDto(), categoryId);
+
+        verify(categoryRepository).findById(categoryId);
+        verify(categoryMapper).toDto(getFirstCategory());
 
         assertEquals(expected, actual);
     }
@@ -79,12 +80,14 @@ public class CategoryServiceTest {
     void update_WithNotValidId() {
         String expectedMessage = "Can't find category with id: " + getFirstCategory().getId();
 
-        Mockito.when(categoryRepository.findById(getFirstCategory().getId()))
+        when(categoryRepository.findById(getFirstCategory().getId()))
                 .thenReturn(Optional.empty());
 
         Exception actualException = Assert.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.update(getFirstCategoryRequestDto(), getFirstCategory()
                         .getId()));
+
+        verify(categoryRepository).findById(getFirstCategory().getId());
 
         assertEquals(expectedMessage, actualException.getMessage());
     }
@@ -97,11 +100,15 @@ public class CategoryServiceTest {
         CategoryDto expected = new CategoryDto(
                 getFirstCategory().getId(), "Fantasy", "description");
 
-        Mockito.when(categoryRepository.findById(getFirstCategory().getId()))
+        when(categoryRepository.findById(getFirstCategory().getId()))
                 .thenReturn(Optional.of(getFirstCategory()));
-        Mockito.when(categoryMapper.toDto(getFirstCategory())).thenReturn(expected);
+        when(categoryMapper.toDto(getFirstCategory())).thenReturn(expected);
 
         CategoryDto actual = categoryService.findById(getFirstCategory().getId());
+
+        verify(categoryRepository).findById(getFirstCategory().getId());
+        verify(categoryMapper).toDto(getFirstCategory());
+
 
         assertEquals(expected, actual);
     }
@@ -113,11 +120,13 @@ public class CategoryServiceTest {
     void findById_WithNonExistId_ShouldReturnException() {
         String expectMessage = "Can't find category with id: " + getFirstCategory().getId();
 
-        Mockito.when(categoryRepository.findById(getFirstCategory().getId()))
+        when(categoryRepository.findById(getFirstCategory().getId()))
                 .thenReturn(Optional.empty());
 
         Exception actualException = Assert.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.findById(getFirstCategory().getId()));
+
+        verify(categoryRepository).findById(getFirstCategory().getId());
 
         assertEquals(expectMessage, actualException.getMessage());
     }
